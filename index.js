@@ -42,7 +42,11 @@ const renderSvg = function(p) {
 
 const renderPng = function(p) {
   const svg = renderSvg(p);
-  return svgToPng(svg, {width: SIGIL_SIZE, height: SIGIL_SIZE}); // promise
+  return svgToPng(svg, {
+    background: 'black',
+    width: (SIGIL_SIZE/9*16), // avoid twitter crop
+    height: SIGIL_SIZE
+  }); // promise
 }
 
 const pickP = function() {
