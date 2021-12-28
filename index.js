@@ -80,6 +80,12 @@ const sendTweet = async function(p, mediaId) {
   return;
 }
 
+const runNext = function() {
+  let n = (new Date()).getTime();
+  let s = Math.floor(n / POST_MSECS);
+  setTimeout(run, (POST_MSECS - n % POST_MSECS));
+}
+
 const run = async function() {
   let n = (new Date()).getTime();
   let s = Math.floor(n / POST_MSECS);
@@ -96,4 +102,4 @@ const run = async function() {
   return;
 }
 
-loadState().then(run);
+loadState().then(runNext);
