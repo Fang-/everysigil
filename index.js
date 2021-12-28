@@ -6,6 +6,8 @@ const Twitter = new Twit(require('./config.js'));
 const ob = require('urbit-ob');
 const { sigil, stringRenderer } = require('@tlon/sigil-js');
 
+const RNG = require('rng-js');
+
 const { convert: svgToPng } = require('convert-svg-to-png');
 
 const STATE_FILE = 'posted.json';
@@ -49,10 +51,11 @@ const renderPng = function(p) {
   }); // promise
 }
 
-const pickP = function() {
+const pickP = function(s) {
+  let rng = new RNG(s);
   let p;
   do {
-    p = Math.floor(Math.random() * (0xffffffff+1));
+    p = rng.random(0, 0xffffffff+1);
   } while (!!posted[p]);
   return p;
 }
@@ -82,7 +85,7 @@ const run = async function() {
   let s = Math.floor(n / POST_MSECS);
   setTimeout(run, (POST_MSECS - n % POST_MSECS));
   try {
-    const p = pickP();
+    const p = pickP(s);
     const png = await renderPng(p);
     const imgId = await uploadPng(png);
     await sendTweet(p, imgId);
