@@ -10,7 +10,7 @@ const { convert: svgToPng } = require('convert-svg-to-png');
 
 const STATE_FILE = 'posted.json';
 const SIGIL_SIZE = 1024;
-const POST_HOURS = 6;
+const POST_MSECS = 6 * 60 * 60 * 1000;
 
 let posted = {};
 
@@ -78,6 +78,9 @@ const sendTweet = async function(p, mediaId) {
 }
 
 const run = async function() {
+  let n = (new Date()).getTime();
+  let s = Math.floor(n / POST_MSECS);
+  setTimeout(run, (POST_MSECS - n % POST_MSECS));
   try {
     const p = pickP();
     const png = await renderPng(p);
@@ -87,7 +90,6 @@ const run = async function() {
   } catch (e) {
     console.error('failed to post', e);
   }
-  setTimeout(run, POST_HOURS * 1000 * 60 * 60);
   return;
 }
 
